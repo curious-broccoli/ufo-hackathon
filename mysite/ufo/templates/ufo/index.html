@@ -1,0 +1,41 @@
+{% extends "ufo/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h4>By best Categorical Crossentropy</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Group</th>
+                <th scope="col">Categorical Crossentropy</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for entry in best_cce %}
+            <tr>
+                <td>{{ entry.group__name }}</td>
+                <td>{{ entry.min_cce }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4>By most correct predictions</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Group</th>
+                <th scope="col">Right predictions</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for entry in best_choices %}
+            <tr>
+                <td>{{ entry.group__name }}</td>
+                <td>{{ entry.max_right }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
