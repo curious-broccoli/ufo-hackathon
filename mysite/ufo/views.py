@@ -13,7 +13,7 @@ from ufo.models import Group, Submission
 
 def get_encoded_categories() -> dict[int, tf.Tensor]:
     path = Path(settings.HACKATHON_DATA_DIR).resolve() / "dataset.yaml"
-    with open(path, "r") as file:test
+    with open(path, "r") as file:
         dataset = yaml.safe_load(file)
 
     # integer values of the categories
