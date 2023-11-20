@@ -1,5 +1,7 @@
+from typing import Callable, Iterable, Any
 import json
 from pathlib import Path
+from itertools import groupby
 
 import tensorflow as tf
 import yaml
@@ -44,6 +46,26 @@ def check_predictions_amount(predictions) -> None:
             f"Length of the predictions list ({predictions_length}) and the actual "
             f"list ({labels_length}) are not equal"
         )
+
+
+def get_best_results_grouped(
+    results: Iterable[Any], max_groups: int, group_key: Callable[[Any], Any]
+) -> list[Any]:
+    """get up to max_results rows, group rows if the value in group_key is the same
+
+    Args:
+        results:
+        max_groups:
+        group_key: the key argument for itertools.groupby
+    """
+    groups = []
+    for k, g in groupby(results, group_key):
+        groups.append(list(g))
+
+    limited_results = []
+    for group_items in groups[:max_groups]:
+        limited_results.extend(group_items)
+    return limited_results
 
 
 def process_predictions(
@@ -175,10 +197,15 @@ def index(request: HttpRequest):
         response = process_predictions(predictions, group)
         return response
     elif request.method == "GET":
+        # how many different rows (groups) should be shown in the table
+        MAX_RESULTS_SHOWN = 3
+
+        # maybe limit display of floats to n decimals
+        # should the cce's display be "grouped" too?
         best_cce_predictions = (
             Submission.objects.values("group", "group__name")
             .annotate(min_cce=Min("cce"))
-            .order_by("min_cce")
+            .order_by("min_cce")[:MAX_RESULTS_SHOWN]
         )
 
         # for predictions where the correct category has highest probability
@@ -187,8 +214,9 @@ def index(request: HttpRequest):
             .annotate(max_right=Max("right_predictions"))
             .order_by("-max_right")
         )
-
-        # TODO show only the x top groups
+        most_right_predictions = get_best_results_grouped(
+            most_right_predictions, MAX_RESULTS_SHOWN, lambda x: x["max_right"]
+        )
 
         context = {
             "best_cce": best_cce_predictions,
