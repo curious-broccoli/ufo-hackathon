@@ -1,1 +1,1 @@
-# ufo-hackathon
+# ScaDS.AI Hackathon

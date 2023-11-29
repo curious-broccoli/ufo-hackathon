@@ -5,8 +5,8 @@ from unittest.mock import patch
 from django.http import JsonResponse
 from django.test import TestCase
 
-from ufo.models import Group, Submission
-from ufo.views import categories
+from hackathon.models import Group, Submission
+from hackathon.views import categories
 
 
 def get_response_error_message(input: JsonResponse | dict[str, Any]):
@@ -22,7 +22,7 @@ def pad_list(to_pad: list[float], new_length: int = len(categories)):
 
 
 class SubmitTestCase(TestCase):
-    @patch("ufo.views.MAX_SUBMISSIONS_PER_GROUP", 2)
+    @patch("hackathon.views.MAX_SUBMISSIONS_PER_GROUP", 2)
     def test_too_many_submissions(self):
         group = Group.objects.create(name="foxes")
         Submission(

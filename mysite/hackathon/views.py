@@ -10,7 +10,7 @@ from django.db.models import Max, Min
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render
 
-from ufo.models import Group, Submission
+from hackathon.models import Group, Submission
 
 
 def get_encoded_categories() -> dict[int, tf.Tensor]:
@@ -222,4 +222,4 @@ def index(request: HttpRequest):
             "best_cce": best_cce_predictions,
             "best_choices": most_right_predictions,
         }
-        return render(request, "ufo/index.html", context)
+        return render(request, "hackathon/index.html", context)
